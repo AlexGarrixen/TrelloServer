@@ -1,0 +1,25 @@
+{
+  "name": "trelloServer",
+  "version": 2,
+  "builds": [
+    {
+      "src": "index.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/.*",
+      "dest": "index.js"
+    }
+  ],
+  "env": {
+    "MONGO_USER": "@trello-server-mongo-user",
+    "MONGO_PASSWORD": "@trello-server-mongo-password",
+    "MONGO_DBNAME": "@trello-server-mongo-dbname",
+    "MONGO_DBNAME_DEV": "@trello-server-mongo-dbname-dev",
+    "CLOUDINARY_CLOUDNAME": "@trello-server-cloudinary-cloudname",
+    "CLOUDINARY_APIKEY": "@trello-server-cloudinary-apikey",
+    "CLOUDINARY_APISECRET": "@trello-server-cloudinary-apisecret"
+  }
+}
