@@ -6,6 +6,7 @@ const routeBoards = require('./routes/boards');
 const routeAttachments = require('./routes/attachments');
 const routeLists = require('./routes/lists');
 const routeCards = require('./routes/cards');
+const routeRoot = require('./routes/root');
 const dbConnect = require('./db/config');
 const notFound = require('./middlewares/notFound');
 const {
@@ -23,6 +24,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 
 //routes
+routeRoot(app);
 routeBoards(app);
 routeAttachments(app);
 routeLists(app);
