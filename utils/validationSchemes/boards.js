@@ -2,7 +2,10 @@ const Joi = require('joi');
 
 const schemeCreateBoard = Joi.object({
   title: Joi.string().required(),
-  picture: Joi.string().allow('').required(),
+  picture: Joi.object({
+    path: Joi.string().allow('').required(),
+    publicId: Joi.string().allow('').required(),
+  }).required(),
 });
 
 const schemeUpdateBoard = Joi.object({

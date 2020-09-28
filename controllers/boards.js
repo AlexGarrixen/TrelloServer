@@ -24,7 +24,10 @@ const createBoard = async (req, res, next) => {
     'https://res.cloudinary.com/dxarbtyux/image/upload/v1600541466/trelloPlaceholders/placeholder_600x400_z3stnz.svg';
   const board = new Board({
     title,
-    picture: picture || placeholderPicture,
+    picture: {
+      path: picture.path || placeholderPicture,
+      publicId: picture.publicId || '',
+    },
     description: '',
   });
 
@@ -72,14 +75,16 @@ const deleteBoard = async (req, res, next) => {
 
     const boardDeleted = await Board.findByIdAndDelete(boardId);
 
+    let attachmentsIds = [];
+    board.picture.publicId && attachmentsIds.push(board.picture.publicId);
+
     const cards = await Card.find({ boardId }, 'attachments');
-    let attachmentsCards = [];
 
     cards.forEach(({ attachments }) =>
-      attachments.forEach(({ publicId }) => attachmentsCards.push(publicId))
+      attachments.forEach(({ publicId }) => attachmentsIds.push(publicId))
     );
 
-    const promisesDeleteAttachments = attachmentsCards.map((publicId) =>
+    const promisesDeleteAttachments = attachmentsIds.map((publicId) =>
       deleteResources(publicId)
     );
 
