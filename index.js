@@ -14,12 +14,27 @@ const {
   errorConsole,
   errorHandler,
 } = require('./middlewares/errors');
+const env = require('./config/env');
 
 //db connection
 dbConnect();
 
 //middlewares
-app.use(cors());
+const whitelist = [
+  'https://trello-clone-js.vercel.app',
+  'https://trello-clone-next.vercel.app',
+];
+
+app.use(
+  cors({
+    origin: (origin, cb) => {
+      if (!env.isDev) {
+        const originAllowed = whitelist.indexOf(origin) !== -1;
+        originAllowed ? cb(null, true) : cb(new Error('Not allowed by CORS'));
+      } else cb(null, true);
+    },
+  })
+);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 
