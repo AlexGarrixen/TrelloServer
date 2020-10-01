@@ -32,6 +32,10 @@ const createList = async (req, res, next) => {
 
     const listCreated = await list.save();
 
+    await Board.findByIdAndUpdate(boardId, {
+      lists: [...board.lists, listCreated._id],
+    });
+
     res.status(201).json(listCreated);
   } catch (e) {
     next(e);
@@ -85,6 +89,14 @@ const deleteList = async (req, res, next) => {
 
     await Promise.all(promisesDeleteAttachments);
     await Card.deleteMany({ listId });
+
+    const newBoardLists = [];
+    const board = await Board.findById(list.boardId, 'lists');
+    board.lists.forEach(
+      (listId) => !listId.equals(listDeleted._id) && newBoardLists.push(listId)
+    );
+
+    await Board.findByIdAndUpdate(list.boardId, { lists: newBoardLists });
 
     res.status(200).json(listDeleted);
   } catch (e) {

@@ -1,4 +1,4 @@
-const { Schema, model } = require('mongoose');
+const { Schema, model, Types } = require('mongoose');
 
 const schemaBoard = Schema({
   title: String,
@@ -7,6 +7,7 @@ const schemaBoard = Schema({
     path: String,
     publicId: String,
   },
+  lists: [{ type: Types.ObjectId, ref: 'List' }],
 });
 
 const Board = model('Board', schemaBoard);
