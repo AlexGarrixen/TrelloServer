@@ -11,7 +11,13 @@ const getBoards = async (req, res, next) => {
   if (boardId) query._id = boardId;
 
   try {
-    const response = await Board.find(query);
+    const response = await Board.find(query).populate(
+      boardId && {
+        path: 'lists',
+        populate: { path: 'cards' },
+      }
+    );
+
     res.status(201).json(response);
   } catch (e) {
     next(e);
@@ -29,6 +35,7 @@ const createBoard = async (req, res, next) => {
       publicId: picture.publicId || '',
     },
     description: '',
+    lists: [],
   });
 
   try {
@@ -41,12 +48,13 @@ const createBoard = async (req, res, next) => {
 
 const updateBoard = async (req, res, next) => {
   const { boardId } = req.params;
-  const { title, picture, description } = req.body;
+  const { title, picture, description, lists } = req.body;
   let query = {};
 
   if (title) query.title = title;
   if (picture) query.picture = picture;
   if (description) query.description = description;
+  if (lists) query.lists = lists;
 
   try {
     const board = await Board.findById(boardId);
