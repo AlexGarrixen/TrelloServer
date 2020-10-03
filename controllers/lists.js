@@ -80,7 +80,9 @@ const deleteList = async (req, res, next) => {
     let attachmentsCards = [];
 
     cards.forEach(({ attachments }) =>
-      attachments.forEach(({ publicId }) => attachmentsCards.push(publicId))
+      attachments.forEach(
+        ({ publicId }) => publicId && attachmentsCards.push(publicId)
+      )
     );
 
     const promisesDeleteAttachments = attachmentsCards.map((publicId) =>

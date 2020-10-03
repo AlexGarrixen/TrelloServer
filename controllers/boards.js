@@ -89,7 +89,9 @@ const deleteBoard = async (req, res, next) => {
     const cards = await Card.find({ boardId }, 'attachments');
 
     cards.forEach(({ attachments }) =>
-      attachments.forEach(({ publicId }) => attachmentsIds.push(publicId))
+      attachments.forEach(
+        ({ publicId }) => publicId && attachmentsIds.push(publicId)
+      )
     );
 
     const promisesDeleteAttachments = attachmentsIds.map((publicId) =>
