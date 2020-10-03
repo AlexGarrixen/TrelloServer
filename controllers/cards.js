@@ -21,13 +21,16 @@ const getCards = async (req, res, next) => {
 const createCard = async (req, res, next) => {
   const { listId } = req.query;
   const { title } = req.body;
+  const pathDefaultPicture =
+    'https://res.cloudinary.com/dxarbtyux/image/upload/v1601709268/trelloPlaceholders/placeholder_1_y0xhnv.png';
+
   const data = {
     listId,
     labels: [],
     attachments: [],
     title,
     description: '',
-    picture: { path: '', publicId: '' },
+    picture: { path: pathDefaultPicture, publicId: '' },
   };
 
   try {
@@ -289,7 +292,7 @@ const deleteCard = async (req, res, next) => {
     await List.findByIdAndUpdate(cardDeleted.listId, { cards: newCards });
 
     const promisesDeleteAttachments = cardDeleted.attachments.map(
-      ({ publicId }) => deleteResources(publicId)
+      ({ publicId }) => publicId && deleteResources(publicId)
     );
 
     await Promise.all(promisesDeleteAttachments);
