@@ -28,8 +28,9 @@ const createBoard = async (req, res, next) => {
   const { title, picture } = req.body;
   const placeholderPicture =
     'https://res.cloudinary.com/dxarbtyux/image/upload/v1600541466/trelloPlaceholders/placeholder_600x400_z3stnz.svg';
+
   const board = new Board({
-    title,
+    title: title.includes('https://') ? title.replace('https://', '') : title,
     picture: {
       path: picture.path || placeholderPicture,
       publicId: picture.publicId || '',
@@ -51,7 +52,10 @@ const updateBoard = async (req, res, next) => {
   const { title, picture, description, lists } = req.body;
   let query = {};
 
-  if (title) query.title = title;
+  if (title)
+    query.title = title.includes('https://')
+      ? title.replace('https://', '')
+      : title;
   if (picture) query.picture = picture;
   if (description) query.description = description;
   if (lists) query.lists = lists;
