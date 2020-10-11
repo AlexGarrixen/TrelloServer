@@ -10,7 +10,6 @@ const schemeCreateBoard = Joi.object({
 
 const schemeUpdateBoard = Joi.object({
   title: Joi.string(),
-  picture: Joi.string().allow(''),
   description: Joi.string(),
   lists: Joi.array(),
 });

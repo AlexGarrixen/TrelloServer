@@ -49,14 +49,13 @@ const createBoard = async (req, res, next) => {
 
 const updateBoard = async (req, res, next) => {
   const { boardId } = req.params;
-  const { title, picture, description, lists } = req.body;
+  const { title, description, lists } = req.body;
   let query = {};
 
   if (title)
     query.title = title.includes('https://')
       ? title.replace('https://', '')
       : title;
-  if (picture) query.picture = picture;
   if (description) query.description = description;
   if (lists) query.lists = lists;
 
@@ -112,9 +111,39 @@ const deleteBoard = async (req, res, next) => {
   }
 };
 
+const handleUploadedAttachment = async (req, res, next) => {
+  const { path, filename: publicId } = req.file;
+  const { boardId } = req.params;
+
+  try {
+    const board = await Board.findById(boardId);
+
+    if (board === null)
+      return next(Boom.notFound(`Not found board with id:${boardId}`));
+
+    if (board.picture.publicId) await deleteResources(board.picture.publicId);
+
+    const newBoard = await Board.findByIdAndUpdate(
+      boardId,
+      {
+        picture: {
+          path,
+          publicId,
+        },
+      },
+      { new: true }
+    );
+
+    res.status(200).json({ newBoard });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   getBoards,
   createBoard,
   updateBoard,
   deleteBoard,
+  handleUploadedAttachment,
 };
